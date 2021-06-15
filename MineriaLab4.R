@@ -21,11 +21,15 @@ str(data)
 
 bn_df <- data
 
-res <- hc(bn_df) #Algoritmo Hill-Climbing
+resHC <- hc(bn_df) # Algoritmo Hill-Climbing
+resMMHC <- mmhc(bn_df)  # Algoritmo MaxMin Hill-Climbing
+resMMPC <- mmpc(bn_df) # Algoritmo MaxMin Parents and Children 
+
+
+
 
 # Visualizacion de las redes bayesianas 
-
-viewer(res,
+viewer(resMMPC,
        bayesianNetwork.width = "100%",
        bayesianNetwork.height = "80vh",
        bayesianNetwork.layout = "layout_with_sugiyama",
@@ -34,7 +38,7 @@ viewer(res,
        bayesianNetwork.footer = "Fig. 1 - Layout with Sugiyama"
 )
 
-viewer(res,
+viewer(resMMHC,
        bayesianNetwork.width = "100%",
        bayesianNetwork.height = "80vh",
        bayesianNetwork.layout = "layout_on_grid",
