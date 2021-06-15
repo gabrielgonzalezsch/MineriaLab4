@@ -3,6 +3,41 @@ library(bnlearn)
 library(bnviewer)
 
 
+
+########################### Funciones ########################### 
+graficar1 <- function(res){
+        # Visualizacion de las redes bayesianas 
+        viewer(res,
+               bayesianNetwork.width = "100%",
+               bayesianNetwork.height = "80vh",
+               bayesianNetwork.layout = "layout_with_sugiyama",
+               bayesianNetwork.title="Discrete Bayesian Network - Alarm",
+               bayesianNetwork.subtitle = "Monitoring of emergency care patients",
+               bayesianNetwork.footer = "Fig. 1 - Layout with Sugiyama"
+        )   
+}
+
+graficar2 <- function(res){
+        viewer(resMMHC,
+               bayesianNetwork.width = "100%",
+               bayesianNetwork.height = "80vh",
+               bayesianNetwork.layout = "layout_on_grid",
+               bayesianNetwork.title="Discrete Bayesian Network - Alarm",
+               bayesianNetwork.subtitle = "Monitoring of emergency care patients",
+               bayesianNetwork.footer = "Fig. 2 - Layout on grid",
+               
+               node.colors = list(background = "#f4bafd",
+                                  border = "#2b7ce9",
+                                  highlight = list(background = "#97c2fc",
+                                                   border = "#2b7ce9"))
+        )
+        
+        
+}
+
+
+
+
 ########################### 1. Lectura de Datos ###########################
 data <- data.frame(alarm)
 
@@ -19,49 +54,47 @@ str(data)
 #Datos categoricos (no hay números)
 #Datos son factores de 2,3 y 4 niveles según la variable
 
+
+#Lista negra
+bl<-data.frame("M..Work","Family") #Lista negra de relaciones (Origen, Destino)
+res <- hc(bn_df,blacklist = bl)
+plot(res)
+
+
 bn_df <- data
+
+
+########################### 3. Aplicar Método ###########################
 
 resHC <- hc(bn_df) # Algoritmo Hill-Climbing
 resMMHC <- mmhc(bn_df)  # Algoritmo MaxMin Hill-Climbing
 resMMPC <- mmpc(bn_df) # Algoritmo MaxMin Parents and Children 
 
+#Mostrar resp.
+print(resHC)
+print(resMMHC)
+print(resMMPC)
 
 
+### Graficar ###
+graficar1(resHC)
+graficar1(resMMHC)
+graficar1(resMMPC)
 
-# Visualizacion de las redes bayesianas 
-viewer(resMMPC,
-       bayesianNetwork.width = "100%",
-       bayesianNetwork.height = "80vh",
-       bayesianNetwork.layout = "layout_with_sugiyama",
-       bayesianNetwork.title="Discrete Bayesian Network - Alarm",
-       bayesianNetwork.subtitle = "Monitoring of emergency care patients",
-       bayesianNetwork.footer = "Fig. 1 - Layout with Sugiyama"
-)
-
-viewer(resMMHC,
-       bayesianNetwork.width = "100%",
-       bayesianNetwork.height = "80vh",
-       bayesianNetwork.layout = "layout_on_grid",
-       bayesianNetwork.title="Discrete Bayesian Network - Alarm",
-       bayesianNetwork.subtitle = "Monitoring of emergency care patients",
-       bayesianNetwork.footer = "Fig. 2 - Layout on grid",
-       
-       node.colors = list(background = "#f4bafd",
-                          border = "#2b7ce9",
-                          highlight = list(background = "#97c2fc",
-                                           border = "#2b7ce9"))
-)
+graficar2(resHC)
+graficar2(resMMHC)
+graficar2(resMMPC)
 
 
+#Obtener BIC
+scHC <-score(resHC,bn_df )              # BIC por default
+scMMHC <- score(resMMHC,bn_df)
+scMMPC <- score(resMMPC,bn_df)
 
-bl<-data.frame("M..Work","Family") #Lista negra de relaciones (Origen, Destino)
-res <- hc(bn_df,blacklist = bl)
-plot(res)
+print(scHC)
+print(scMMHC)
+print(scMMPC)
 
-print(res)
-
-sc<-score(res,bn_df) # BIC por default
-print(sc)
 
 
 fittedbn <- bn.fit(res, data = bn_df) # Se obtiene la tabla de probabilidades condicionales mediante EM. (Máxima Expectación, propagación de la evidencia)
