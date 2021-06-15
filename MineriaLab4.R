@@ -95,6 +95,15 @@ print(scHC)
 print(scMMHC)
 print(scMMPC)
 
+#Propagación de la evidencia
+fittedbn.HC <- bn.fit(resHC, data = bn_df)
+fittedbn.MMHC <- bn.fit(resMMHC, data = bn_df)
+fittedbn.MMPC <- bn.fit(resMMPC, data = bn_df)
+
+print(fittedbn.HC$E)
+print(fittedbn.MMHC$E)
+print(fittedbn.MMPC$E)
+
 
 
 fittedbn <- bn.fit(res, data = bn_df) # Se obtiene la tabla de probabilidades condicionales mediante EM. (Máxima Expectación, propagación de la evidencia)
